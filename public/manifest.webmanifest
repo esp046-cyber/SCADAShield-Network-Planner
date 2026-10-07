@@ -1,0 +1,21 @@
+{
+  "id": "/",
+  "name": "SCADAShield Network Planner",
+  "short_name": "SCADAShield",
+  "description": "Design, segment and validate secure SCADA networks using the Purdue Model and IEC 62443 concepts.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "lang": "en",
+  "dir": "ltr",
+  "theme_color": "#0b1220",
+  "background_color": "#0b1220",
+  "categories": ["productivity", "utilities", "business", "security"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
