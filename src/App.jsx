@@ -3,10 +3,10 @@ import { ReactFlowProvider, addEdge, useEdgesState, useNodesState, useReactFlow 
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { RefreshCw, X } from 'lucide-react'
 
-import Header from '../components/Header.jsx'
-import EquipmentSidebar from '../components/EquipmentSidebar.jsx'
-import NetworkCanvas from '../components/NetworkCanvas.jsx'
-import SecurityPanel from '../components/SecurityPanel.jsx'
+import Header from './components/Header.jsx'
+import EquipmentSidebar from './components/EquipmentSidebar.jsx'
+import NetworkCanvas from './components/NetworkCanvas.jsx'
+import SecurityPanel from './components/SecurityPanel.jsx'
 
 import { EQUIPMENT_BY_KIND, GRID, LANE_HEIGHT, ZONES } from './lib/catalog'
 import { validateNetwork } from './lib/securityRules'
@@ -259,46 +259,49 @@ function Studio() {
         online={online}
       />
 
-    <div className="relative flex min-h-0 flex-1 overflow-hidden">
-  {/* Mobile Backdrop */}
-  {(leftOpen || rightOpen) && (
-    <div
-      className="absolute inset-0 z-20 bg-black/60 lg:hidden"
-      onClick={() => {
-        setLeftOpen(false)
-        setRightOpen(false)
-      }}
-    />
-  )}
+      <div className="relative flex min-h-0 flex-1 overflow-hidden">
+        {/* Mobile Backdrop */}
+        {(leftOpen || rightOpen) && (
+          <div
+            className="absolute inset-0 z-20 bg-black/60 lg:hidden"
+            onClick={() => {
+              setLeftOpen(false)
+              setRightOpen(false)
+            }}
+          />
+        )}
 
-  <EquipmentSidebar open={leftOpen} onClose={() => setLeftOpen(false)} onAdd={(k) => addNode(k)} />
+        <EquipmentSidebar open={leftOpen} onClose={() => setLeftOpen(false)} onAdd={(k) => addNode(k)} />
 
-  <main ref={canvasRef} className="relative h-full min-w-0 flex-1 overflow-hidden">
-    <NetworkCanvas
-      nodes={nodes}
-      edges={edges}
-      analysis={analysis}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onConnect={onConnect}
-      onDropKind={addNode}
-    />
-  </main>
+        <main ref={canvasRef} className="relative h-full min-w-0 flex-1 overflow-hidden">
+          <NetworkCanvas
+            nodes={nodes}
+            edges={edges}
+            analysis={analysis}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onDropKind={addNode}
+          />
+        </main>
 
-  <SecurityPanel
-    open={rightOpen}
-    onClose={() => setRightOpen(false)}
-    analysis={analysis}
-    nodes={nodes}
-    selectedNode={selectedNode}
-    selectedEdge={selectedEdge}
-    onUpdateNode={updateNode}
-    onUpdateEdge={updateEdge}
-    onDeleteNode={deleteNode}
-    onDeleteEdge={deleteEdge}
-    onFocusIssue={focusIssue}
-  />
-</div>
+        <SecurityPanel
+          open={rightOpen}
+          onClose={() => setRightOpen(false)}
+          analysis={analysis}
+          nodes={nodes}
+          selectedNode={selectedNode}
+          selectedEdge={selectedEdge}
+          onUpdateNode={updateNode}
+          onUpdateEdge={updateEdge}
+          onDeleteNode={deleteNode}
+          onDeleteEdge={deleteEdge}
+          onFocusIssue={focusIssue}
+        />
+      </div>
+
+      <ReloadPrompt />
+    </div>
   )
 }
 
