@@ -1,7 +1,17 @@
-import { Plus, X } from 'lucide-react'
+import React, { useState } from 'react'
+import { ChevronDown, ChevronRight, Plus, X } from 'lucide-react'
 import { DND_MIME, EQUIPMENT, EQUIPMENT_GROUPS, ZONES } from '../lib/catalog'
 
 export default function EquipmentSidebar({ open, onClose, onAdd }) {
+  const [openGroups, setOpenGroups] = useState(
+    EQUIPMENT_GROUPS.reduce((acc, group) => ({ ...acc, [group]: true }), {})
+  )
+  const [zonesOpen, setZonesOpen] = useState(true)
+
+  const toggleGroup = (group) => {
+    setOpenGroups((prev) => ({ ...prev, [group]: !prev[group] }))
+  }
+
   const onDragStart = (e, kind) => {
     e.dataTransfer.setData(DND_MIME, kind)
     e.dataTransfer.effectAllowed = 'move'
@@ -24,54 +34,76 @@ export default function EquipmentSidebar({ open, onClose, onAdd }) {
         </button>
       </div>
 
-      <div className="thin-scroll flex-1 space-y-5 overflow-y-auto p-3">
-        {EQUIPMENT_GROUPS.map((group) => (
-          <section key={group}>
-            <h3 className="mb-2 px-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">{group}</h3>
-            <ul className="space-y-2">
-              {EQUIPMENT.filter((e) => e.group === group).map((eq) => {
-                const Icon = eq.Icon
-                return (
-                  <li
-                    key={eq.kind}
-                    draggable
-                    onDragStart={(e) => onDragStart(e, eq.kind)}
-                    className="group flex cursor-grab items-center gap-3 rounded-lg border border-slate-800 bg-slate-900 p-2.5 active:cursor-grabbing hover:border-slate-600"
-                    style={{ borderLeft: `3px solid ${eq.color}` }}
-                  >
-                    <div className="rounded-md p-2" style={{ background: `${eq.color}22`, color: eq.color }}>
-                      <Icon size={18} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-xs font-semibold text-slate-100">{eq.label}</div>
-                      <div className="truncate text-[10px] text-slate-500">{eq.subtitle}</div>
-                    </div>
-                    <button
-                      onClick={() => onAdd(eq.kind)}
-                      className="rounded-md bg-slate-800 p-1.5 text-slate-300 hover:bg-sky-600 hover:text-white"
-                      aria-label={`Add ${eq.label}`}
-                    >
-                      <Plus size={16} />
-                    </button>
-                  </li>
-                )
-              })}
-            </ul>
-          </section>
-        ))}
+      <div className="thin-scroll flex-1 space-y-4 overflow-y-auto p-3">
+        {EQUIPMENT_GROUPS.map((group) => {
+          const isOpen = openGroups[group] ?? true
+          const groupItems = EQUIPMENT.filter((e) => e.group === group)
+
+          return (
+            <section key={group} className="border-b border-slate-900 pb-3">
+              <button
+                onClick={() => toggleGroup(group)}
+                className="flex w-full items-center justify-between px-1 py-1 text-left text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-200"
+              >
+                <span>{group}</span>
+                {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+              </button>
+
+              {isOpen && (
+                <ul className="mt-2 space-y-2">
+                  {groupItems.map((eq) => {
+                    const Icon = eq.Icon
+                    return (
+                      <li
+                        key={eq.kind}
+                        draggable
+                        onDragStart={(e) => onDragStart(e, eq.kind)}
+                        className="group flex cursor-grab items-center gap-3 rounded-lg border border-slate-800 bg-slate-900 p-2.5 active:cursor-grabbing hover:border-slate-600"
+                        style={{ borderLeft: `3px solid ${eq.color}` }}
+                      >
+                        <div className="rounded-md p-2" style={{ background: `${eq.color}22`, color: eq.color }}>
+                          <Icon size={18} />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-xs font-semibold text-slate-100">{eq.label}</div>
+                          <div className="truncate text-[10px] text-slate-500">{eq.subtitle}</div>
+                        </div>
+                        <button
+                          onClick={() => onAdd(eq.kind)}
+                          className="rounded-md bg-slate-800 p-1.5 text-slate-300 hover:bg-sky-600 hover:text-white"
+                          aria-label={`Add ${eq.label}`}
+                        >
+                          <Plus size={16} />
+                        </button>
+                      </li>
+                    )
+                  })}
+                </ul>
+              )}
+            </section>
+          )
+        })}
       </div>
 
       <div className="border-t border-slate-800 p-3">
-        <h3 className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Purdue zones</h3>
-        <ul className="space-y-1">
-          {ZONES.map((z) => (
-            <li key={z.id} className="flex items-center gap-2 text-[11px] text-slate-400">
-              <span className="h-2.5 w-2.5 rounded-sm" style={{ background: z.color }} />
-              <span className="flex-1">{z.label}</span>
-              <span className="text-slate-600">{z.level}</span>
-            </li>
-          ))}
-        </ul>
+        <button
+          onClick={() => setZonesOpen(!zonesOpen)}
+          className="flex w-full items-center justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-200"
+        >
+          <span>Purdue zones</span>
+          {zonesOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+        </button>
+        {zonesOpen && (
+          <ul className="mt-2 space-y-1">
+            {ZONES.map((z) => (
+              <li key={z.id} className="flex items-center gap-2 text-[11px] text-slate-400">
+                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: z.color }} />
+                <span className="flex-1">{z.label}</span>
+                <span className="text-slate-600">{z.level}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </aside>
   )
