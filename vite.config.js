@@ -2,10 +2,12 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const base = '/SCADAShield-Network-Planner/'
+
 export default defineConfig({
+  base,
   plugins: [
     react(),
-    VitePWA({
       // "prompt" lets App.jsx show an "Update available" toast instead of silently reloading.
       registerType: 'prompt',
       injectRegister: false, // registration happens via virtual:pwa-register/react in App.jsx
