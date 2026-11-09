@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { AlertOctagon, AlertTriangle, CheckCircle2, Info, MousePointerClick, Trash2, X } from 'lucide-react'
-import { EQUIPMENT_BY_KIND, PROTOCOLS, PROTOCOL_LIST, ZONE_BY_ID } from '../lib/catalog'
+import { EQUIPMENT_BY_KIND, PROTOCOLS, PROTOCOL_LIST, ZONE_BY_ID } from '../src/lib/catalog'
 
 const SEV = {
   error: { Icon: AlertOctagon, label: 'Error', cls: 'border-rose-500/30 bg-rose-500/5', text: 'text-rose-300' },

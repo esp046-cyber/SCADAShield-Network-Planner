@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import ReactFlow, { Background, BackgroundVariant, ConnectionMode, Controls, MiniMap, useReactFlow } from 'reactflow'
 import { IndustrialNode, ZoneLane } from './CanvasNodes'
-import { DND_MIME, EQUIPMENT_BY_KIND, GRID, PROTOCOLS } from '../lib/catalog'
+import { DND_MIME, EQUIPMENT_BY_KIND, GRID, PROTOCOLS } from '../src/lib/catalog'
 
 const nodeTypes = { industrial: IndustrialNode, lane: ZoneLane }
 
