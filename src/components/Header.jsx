@@ -1,5 +1,5 @@
 import { FileJson, FileText, Loader2, PanelLeft, ShieldAlert, ShieldCheck, WifiOff } from 'lucide-react'
-import { TEMPLATES } from '../src/lib/sampleProject'
+import { TEMPLATES } from '../lib/sampleProject'
 
 export default function Header({
   projectName,
