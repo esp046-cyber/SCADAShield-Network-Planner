@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { AlertOctagon, AlertTriangle, CheckCircle2, ChevronDown, ChevronRight, Info, MousePointerClick, ShieldAlert, Trash2, X } from 'lucide-react'
+import { AlertOctagon, AlertTriangle, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Info, MousePointerClick, ShieldAlert, Trash2, X } from 'lucide-react'
 import { EQUIPMENT_BY_KIND, PROTOCOLS, PROTOCOL_LIST, ZONE_BY_ID } from '../lib/catalog'
 
 const SEV = {
@@ -106,7 +106,8 @@ function EdgeInspector({ edge, labelOf, onUpdate, onDelete }) {
 
 export default function SecurityPanel({
   open, onClose, analysis, nodes, selectedNode, selectedEdge,
-  onUpdateNode, onUpdateEdge, onDeleteNode, onDeleteEdge, onFocusIssue
+  onUpdateNode, onUpdateEdge, onDeleteNode, onDeleteEdge, onFocusIssue,
+  collapsed, onToggleCollapse
 }) {
   const [filter, setFilter] = useState('all')
   const [expandedRules, setExpandedRules] = useState({})
@@ -130,120 +131,144 @@ export default function SecurityPanel({
   ]
 
   return (
-    <aside
-      className={`absolute inset-y-0 right-0 z-30 flex w-96 max-w-[92vw] flex-col border-l border-slate-800 bg-slate-950 transition-transform duration-200 lg:static lg:z-auto lg:max-w-none lg:translate-x-0 ${
-        open ? 'translate-x-0' : 'translate-x-full'
-      }`}
-      aria-label="Security validation"
-    >
-      <div className="flex items-center justify-between border-b border-slate-800 px-4 py-3">
-        <h2 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
-          <ShieldAlert size={16} className="text-amber-400" />
-          Security validation
-        </h2>
-        <button onClick={onClose} className="rounded p-1.5 text-slate-400 hover:bg-slate-800 lg:hidden" aria-label="Close security panel">
-          <X size={18} />
-        </button>
-      </div>
+    <>
+      <aside
+        className={`absolute inset-y-0 right-0 z-30 flex flex-col border-l border-slate-800 bg-slate-950 transition-all duration-200 lg:relative lg:z-auto ${
+          open ? 'translate-x-0' : 'translate-x-full'
+        } lg:translate-x-0 ${
+          collapsed ? 'lg:w-0 lg:overflow-hidden lg:border-l-0' : 'w-96 max-w-[92vw] lg:max-w-none'
+        }`}
+        aria-label="Security validation"
+      >
+        <div className="flex items-center justify-between border-b border-slate-800 px-4 py-3 min-w-[24rem]">
+          <h2 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
+            <ShieldAlert size={16} className="text-amber-400" />
+            Security validation
+          </h2>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={onToggleCollapse}
+              className="hidden rounded p-1.5 text-slate-400 hover:bg-slate-800 lg:block"
+              title="Collapse panel"
+            >
+              <ChevronRight size={16} />
+            </button>
+            <button onClick={onClose} className="rounded p-1.5 text-slate-400 hover:bg-slate-800 lg:hidden" aria-label="Close security panel">
+              <X size={18} />
+            </button>
+          </div>
+        </div>
 
-      <div className="thin-scroll flex-1 overflow-y-auto">
-        {/* Score */}
-        <div className="flex items-center gap-4 border-b border-slate-800 p-4">
-          <ScoreRing score={analysis.score} />
-          <div className="min-w-0 flex-1">
-            <div className="text-sm font-semibold text-slate-100">{analysis.verdict}</div>
-            <div className="mt-1 text-[11px] text-slate-500">
-              {analysis.deviceCount} devices, {analysis.linkStats.total} conduits, {analysis.linkStats.cleartext} cleartext
+        <div className="thin-scroll flex-1 overflow-y-auto min-w-[24rem]">
+          {/* Score */}
+          <div className="flex items-center gap-4 border-b border-slate-800 p-4">
+            <ScoreRing score={analysis.score} />
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-semibold text-slate-100">{analysis.verdict}</div>
+              <div className="mt-1 text-[11px] text-slate-500">
+                {analysis.deviceCount} devices, {analysis.linkStats.total} conduits, {analysis.linkStats.cleartext} cleartext
+              </div>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {analysis.frStatus.map((f) => (
+                  <span key={f.fr} className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ${STATUS[f.status]}`} title={f.name}>
+                    {f.fr.replace('FR', 'FR ')}: {f.status}
+                  </span>
+                ))}
+              </div>
             </div>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {analysis.frStatus.map((f) => (
-                <span key={f.fr} className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ${STATUS[f.status]}`} title={f.name}>
-                  {f.fr.replace('FR', 'FR ')}: {f.status}
-                </span>
+          </div>
+
+          {/* Inspector */}
+          <div className="border-b border-slate-800 p-4">
+            <h3 className="mb-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">Inspector</h3>
+            {selectedNode ? (
+              <NodeInspector node={selectedNode} zoneId={analysis.zoneByNode[selectedNode.id]} onUpdate={onUpdateNode} onDelete={onDeleteNode} />
+            ) : selectedEdge ? (
+              <EdgeInspector edge={selectedEdge} labelOf={labelOf} onUpdate={onUpdateEdge} onDelete={onDeleteEdge} />
+            ) : (
+              <div className="flex items-center gap-2 text-xs text-slate-500">
+                <MousePointerClick size={15} /> Select a device or connection to edit it.
+              </div>
+            )}
+          </div>
+
+          {/* Findings */}
+          <div className="p-4">
+            <div className="mb-3 flex flex-wrap gap-1.5">
+              {tabs.map(([key, label]) => (
+                <button
+                  key={key}
+                  onClick={() => setFilter(key)}
+                  className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${
+                    filter === key ? 'bg-slate-100 text-slate-900' : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {label}
+                </button>
               ))}
             </div>
-          </div>
-        </div>
 
-        {/* Inspector */}
-        <div className="border-b border-slate-800 p-4">
-          <h3 className="mb-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">Inspector</h3>
-          {selectedNode ? (
-            <NodeInspector node={selectedNode} zoneId={analysis.zoneByNode[selectedNode.id]} onUpdate={onUpdateNode} onDelete={onDeleteNode} />
-          ) : selectedEdge ? (
-            <EdgeInspector edge={selectedEdge} labelOf={labelOf} onUpdate={onUpdateEdge} onDelete={onDeleteEdge} />
-          ) : (
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <MousePointerClick size={15} /> Select a device or connection to edit it.
-            </div>
-          )}
-        </div>
+            {analysis.deviceCount === 0 ? (
+              <p className="text-xs text-slate-500">Add equipment to the canvas to start live validation.</p>
+            ) : visible.length === 0 ? (
+              <div className="flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3 text-xs text-emerald-300">
+                <CheckCircle2 size={16} /> Nothing to report in this category.
+              </div>
+            ) : (
+              <ul className="space-y-2.5">
+                {visible.map((i) => {
+                  const s = SEV[i.severity]
+                  const isExpanded = expandedRules[i.id] ?? false
 
-        {/* Findings */}
-        <div className="p-4">
-          <div className="mb-3 flex flex-wrap gap-1.5">
-            {tabs.map(([key, label]) => (
-              <button
-                key={key}
-                onClick={() => setFilter(key)}
-                className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${
-                  filter === key ? 'bg-slate-100 text-slate-900' : 'bg-slate-800 text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {analysis.deviceCount === 0 ? (
-            <p className="text-xs text-slate-500">Add equipment to the canvas to start live validation.</p>
-          ) : visible.length === 0 ? (
-            <div className="flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3 text-xs text-emerald-300">
-              <CheckCircle2 size={16} /> Nothing to report in this category.
-            </div>
-          ) : (
-            <ul className="space-y-2.5">
-              {visible.map((i) => {
-                const s = SEV[i.severity]
-                const isExpanded = expandedRules[i.id] ?? false
-
-                return (
-                  <li key={i.id} className={`rounded-lg border ${s.cls} overflow-hidden`}>
-                    <div className="flex items-center justify-between p-3">
-                      <button 
-                        onClick={() => onFocusIssue(i)} 
-                        className={`flex flex-1 items-start gap-2 text-xs font-semibold ${s.text} text-left hover:brightness-125`}
-                      >
-                        <s.Icon size={15} className="mt-px shrink-0" />
-                        <span>{s.label}: {i.title}</span>
-                      </button>
-                      <button
-                        onClick={() => toggleRule(i.id)}
-                        className="ml-2 rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
-                        aria-label="Toggle details"
-                      >
-                        {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-                      </button>
-                    </div>
-
-                    {isExpanded && (
-                      <div className="border-t border-slate-800/60 bg-slate-950/40 p-3 space-y-2">
-                        <p className="text-[11px] leading-relaxed text-slate-300">{i.message}</p>
-                        <p className="text-[11px] leading-relaxed text-slate-400">
-                          <span className="font-semibold text-slate-300">Fix:</span> {i.remediation}
-                        </p>
-                        <div className="text-[10px] font-medium text-slate-500">
-                          {i.fr.replace('FR', 'FR ')} / {i.ref}
-                        </div>
+                  return (
+                    <li key={i.id} className={`rounded-lg border ${s.cls} overflow-hidden`}>
+                      <div className="flex items-center justify-between p-3">
+                        <button
+                          onClick={() => onFocusIssue(i)}
+                          className={`flex flex-1 items-start gap-2 text-xs font-semibold ${s.text} text-left hover:brightness-125`}
+                        >
+                          <s.Icon size={15} className="mt-px shrink-0" />
+                          <span>{s.label}: {i.title}</span>
+                        </button>
+                        <button
+                          onClick={() => toggleRule(i.id)}
+                          className="ml-2 rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                          aria-label="Toggle details"
+                        >
+                          {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                        </button>
                       </div>
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
-          )}
+
+                      {isExpanded && (
+                        <div className="border-t border-slate-800/60 bg-slate-950/40 p-3 space-y-2">
+                          <p className="text-[11px] leading-relaxed text-slate-300">{i.message}</p>
+                          <p className="text-[11px] leading-relaxed text-slate-400">
+                            <span className="font-semibold text-slate-300">Fix:</span> {i.remediation}
+                          </p>
+                          <div className="text-[10px] font-medium text-slate-500">
+                            {i.fr.replace('FR', 'FR ')} / {i.ref}
+                          </div>
+                        </div>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+
+      {/* Floating Expand Tab when collapsed on desktop */}
+      {collapsed && (
+        <button
+          onClick={onToggleCollapse}
+          className="absolute right-0 top-20 z-20 hidden items-center justify-center rounded-l-md border border-r-0 border-slate-800 bg-slate-900 p-2 text-slate-300 shadow-md hover:bg-slate-800 hover:text-white lg:flex"
+          title="Expand security panel"
+        >
+          <ChevronLeft size={16} />
+        </button>
+      )}
+    </>
   )
 }
