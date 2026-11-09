@@ -3,10 +3,10 @@ import { ReactFlowProvider, addEdge, useEdgesState, useNodesState, useReactFlow 
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { RefreshCw, X } from 'lucide-react'
 
-import Header from '../components/Header.jsx'
-import EquipmentSidebar from '../components/EquipmentSidebar.jsx'
-import NetworkCanvas from '../components/NetworkCanvas.jsx'
-import SecurityPanel from '../components/SecurityPanel.jsx'
+import Header from './components/Header.jsx'
+import EquipmentSidebar from './components/EquipmentSidebar.jsx'
+import NetworkCanvas from './components/NetworkCanvas.jsx'
+import SecurityPanel from './components/SecurityPanel.jsx'
 
 import { EQUIPMENT_BY_KIND, GRID, LANE_HEIGHT, ZONES } from './lib/catalog'
 import { validateNetwork } from './lib/securityRules'
