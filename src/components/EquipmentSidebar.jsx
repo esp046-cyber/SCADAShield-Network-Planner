@@ -1,5 +1,5 @@
 import { Plus, X } from 'lucide-react'
-import { DND_MIME, EQUIPMENT, EQUIPMENT_GROUPS, ZONES } from '../src/lib/catalog'
+import { DND_MIME, EQUIPMENT, EQUIPMENT_GROUPS, ZONES } from '../lib/catalog'
 
 export default function EquipmentSidebar({ open, onClose, onAdd }) {
   const onDragStart = (e, kind) => {

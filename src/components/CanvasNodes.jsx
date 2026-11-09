@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { Handle, Position } from 'reactflow'
-import { EQUIPMENT_BY_KIND, NODE_HEIGHT, getZoneForY } from '../src/lib/catalog'
+import { EQUIPMENT_BY_KIND, NODE_HEIGHT, getZoneForY } from '../lib/catalog'
 
 const RING = {
   error: 'ring-2 ring-rose-500 shadow-lg shadow-rose-500/20',
