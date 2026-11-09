@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -5,19 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
     <title>SCADAShield Network Planner | Purdue Model &amp; IEC 62443 Network Security Studio</title>
+
     <meta
       name="description"
       content="SCADAShield Network Planner is an offline-capable studio for SCADA engineers to design, segment and validate secure industrial networks using the Purdue Model, with live IEC 62443 zone and conduit checks and exportable PDF/JSON reports."
     />
+
     <meta
       name="keywords"
       content="SCADA, ICS security, OT security, Purdue Model, IEC 62443, network segmentation, industrial DMZ, Wonderware, GE iFIX, Siemens PLC, Allen-Bradley, network planner, PWA"
     />
+
     <meta name="author" content="SCADAShield" />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://scadashield.example.com/" />
 
-    <!-- PWA / device -->
+    <!-- Canonical URL -->
+    <link
+      rel="canonical"
+      href="https://esp046-cyber.github.io/SCADAShield-Network-Planner/"
+    />
+
+    <!-- PWA / Device -->
     <meta name="theme-color" content="#0b1220" />
     <meta name="color-scheme" content="dark" />
     <meta name="application-name" content="SCADAShield" />
@@ -26,75 +35,117 @@
     <meta name="apple-mobile-web-app-title" content="SCADAShield" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="format-detection" content="telephone=no" />
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
-    <!-- Open Graph (Facebook, LinkedIn, WhatsApp, Slack) -->
+    <!-- Manifest and Icons -->
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
+
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="%BASE_URL%favicon.svg"
+    />
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="%BASE_URL%icon-192.png"
+    />
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="512x512"
+      href="%BASE_URL%icon-512.png"
+    />
+
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="%BASE_URL%apple-touch-icon.png"
+    />
+
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="SCADAShield Network Planner" />
-    <meta property="og:title" content="SCADAShield Network Planner: Secure SCADA Network Design Studio" />
+
+    <meta
+      property="og:title"
+      content="SCADAShield Network Planner: Secure SCADA Network Design Studio"
+    />
+
     <meta
       property="og:description"
-      content="Drag-and-drop Purdue Model zones, Wonderware, iFIX, Siemens and Allen-Bradley nodes. Validate segmentation live and export an IEC 62443 style compliance report."
+      content="Design Purdue Model zones, connect industrial equipment, validate network segmentation and export security reports."
     />
-    <meta property="og:url" content="https://scadashield.example.com/" />
-    <meta property="og:image" content="https://scadashield.example.com/og-image.png" />
+
+    <meta
+      property="og:url"
+      content="https://esp046-cyber.github.io/SCADAShield-Network-Planner/"
+    />
+
+    <meta
+      property="og:image"
+      content="https://esp046-cyber.github.io/SCADAShield-Network-Planner/og-image.png"
+    />
+
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="SCADAShield Network Planner shield logo on a dark industrial background" />
+
+    <meta
+      property="og:image:alt"
+      content="SCADAShield Network Planner"
+    />
+
     <meta property="og:locale" content="en_US" />
 
-    <!-- Twitter / X Cards -->
+    <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="SCADAShield Network Planner" />
+
+    <meta
+      name="twitter:title"
+      content="SCADAShield Network Planner"
+    />
+
     <meta
       name="twitter:description"
-      content="Design, segment and validate secure SCADA networks with Purdue Model zones and live IEC 62443 checks. Works offline."
+      content="Design, segment and validate secure SCADA networks using Purdue Model zones and IEC 62443 checks."
     />
-    <meta name="twitter:image" content="https://scadashield.example.com/og-image.png" />
-    <meta name="twitter:image:alt" content="SCADAShield Network Planner logo" />
-    <!-- <meta name="twitter:site" content="@your_handle" /> -->
 
-    <!-- Structured data -->
+    <meta
+      name="twitter:image"
+      content="https://esp046-cyber.github.io/SCADAShield-Network-Planner/og-image.png"
+    />
+
+    <!-- Structured Data -->
     <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "SCADAShield Network Planner",
-        "applicationCategory": "SecurityApplication",
-        "operatingSystem": "Any",
-        "browserRequirements": "Requires a modern browser with JavaScript",
-        "description": "Network simulation and security validation studio for SCADA engineers.",
-        "url": "https://scadashield.example.com/",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SCADAShield Network Planner",
+      "applicationCategory": "SecurityApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires a modern browser with JavaScript",
+      "description": "Network simulation and security validation studio for SCADA engineers.",
+      "url": "https://esp046-cyber.github.io/SCADAShield-Network-Planner/",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
       }
+    }
     </script>
   </head>
+
   <body>
     <div id="root"></div>
-    <noscript>SCADAShield Network Planner requires JavaScript to run.</noscript>
-<link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
 
-<link rel="icon"
-      type="image/svg+xml"
-      href="%BASE_URL%favicon.svg" />
+    <noscript>
+      SCADAShield Network Planner requires JavaScript to run.
+    </noscript>
 
-<link rel="icon"
-      type="image/png"
-      sizes="192x192"
-      href="%BASE_URL%icon-192.png" />
-
-<link rel="icon"
-      type="image/png"
-      sizes="512x512"
-      href="%BASE_URL%icon-512.png" />
-
-<link rel="apple-touch-icon"
-      sizes="180x180"
-      href="%BASE_URL%apple-touch-icon.png" />
+    <!-- React Application Entry Point -->
+    <script type="module" src="%BASE_URL%src/main.jsx"></script>
   </body>
 </html>
