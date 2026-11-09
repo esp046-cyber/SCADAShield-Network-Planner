@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { AlertOctagon, AlertTriangle, CheckCircle2, Info, MousePointerClick, Trash2, X } from 'lucide-react'
+import { AlertOctagon, AlertTriangle, CheckCircle2, ChevronDown, ChevronRight, Info, MousePointerClick, ShieldAlert, Trash2, X } from 'lucide-react'
 import { EQUIPMENT_BY_KIND, PROTOCOLS, PROTOCOL_LIST, ZONE_BY_ID } from '../lib/catalog'
 
 const SEV = {
@@ -109,6 +109,12 @@ export default function SecurityPanel({
   onUpdateNode, onUpdateEdge, onDeleteNode, onDeleteEdge, onFocusIssue
 }) {
   const [filter, setFilter] = useState('all')
+  const [expandedRules, setExpandedRules] = useState({})
+
+  const toggleRule = (id) => {
+    setExpandedRules((prev) => ({ ...prev, [id]: !prev[id] }))
+  }
+
   const labelOf = (id) => nodes.find((n) => n.id === id)?.data?.label ?? id
 
   const visible = useMemo(
@@ -131,7 +137,10 @@ export default function SecurityPanel({
       aria-label="Security validation"
     >
       <div className="flex items-center justify-between border-b border-slate-800 px-4 py-3">
-        <h2 className="text-sm font-semibold text-slate-100">Security validation</h2>
+        <h2 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
+          <ShieldAlert size={16} className="text-amber-400" />
+          Security validation
+        </h2>
         <button onClick={onClose} className="rounded p-1.5 text-slate-400 hover:bg-slate-800 lg:hidden" aria-label="Close security panel">
           <X size={18} />
         </button>
@@ -196,23 +205,38 @@ export default function SecurityPanel({
             <ul className="space-y-2.5">
               {visible.map((i) => {
                 const s = SEV[i.severity]
+                const isExpanded = expandedRules[i.id] ?? false
+
                 return (
-                  <li key={i.id}>
-                    <button onClick={() => onFocusIssue(i)} className={`w-full rounded-lg border p-3 text-left hover:brightness-125 ${s.cls}`}>
-                      <div className={`flex items-start gap-2 text-xs font-semibold ${s.text}`}>
+                  <li key={i.id} className={`rounded-lg border ${s.cls} overflow-hidden`}>
+                    <div className="flex items-center justify-between p-3">
+                      <button 
+                        onClick={() => onFocusIssue(i)} 
+                        className={`flex flex-1 items-start gap-2 text-xs font-semibold ${s.text} text-left hover:brightness-125`}
+                      >
                         <s.Icon size={15} className="mt-px shrink-0" />
-                        <span>
-                          {s.label}: {i.title}
-                        </span>
+                        <span>{s.label}: {i.title}</span>
+                      </button>
+                      <button
+                        onClick={() => toggleRule(i.id)}
+                        className="ml-2 rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                        aria-label="Toggle details"
+                      >
+                        {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                      </button>
+                    </div>
+
+                    {isExpanded && (
+                      <div className="border-t border-slate-800/60 bg-slate-950/40 p-3 space-y-2">
+                        <p className="text-[11px] leading-relaxed text-slate-300">{i.message}</p>
+                        <p className="text-[11px] leading-relaxed text-slate-400">
+                          <span className="font-semibold text-slate-300">Fix:</span> {i.remediation}
+                        </p>
+                        <div className="text-[10px] font-medium text-slate-500">
+                          {i.fr.replace('FR', 'FR ')} / {i.ref}
+                        </div>
                       </div>
-                      <p className="mt-1.5 text-[11px] leading-relaxed text-slate-300">{i.message}</p>
-                      <p className="mt-1.5 text-[11px] leading-relaxed text-slate-500">
-                        <span className="font-semibold text-slate-400">Fix:</span> {i.remediation}
-                      </p>
-                      <div className="mt-2 text-[10px] font-medium text-slate-600">
-                        {i.fr.replace('FR', 'FR ')} / {i.ref}
-                      </div>
-                    </button>
+                    )}
                   </li>
                 )
               })}
