@@ -18,7 +18,7 @@ const snap = (v) => Math.round(v / GRID) * GRID
 const uid = (p) => `${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
 
 /* ------------------------------------------------------------------ */
-/* Persistence (offline autosave)                                      */
+/* Persistence (offline autosave)                                     */
 /* ------------------------------------------------------------------ */
 function loadProject() {
   try {
@@ -63,7 +63,7 @@ function useOnline() {
 }
 
 /* ------------------------------------------------------------------ */
-/* PWA update / offline-ready prompt                                   */
+/* PWA update / offline-ready prompt                                  */
 /* ------------------------------------------------------------------ */
 function ReloadPrompt() {
   const {
@@ -72,7 +72,7 @@ function ReloadPrompt() {
     updateServiceWorker
   } = useRegisterSW({
     onRegisteredSW(_url, registration) {
-      if (registration) setInterval(() => registration.update(), 60 * 60 * 1000) // hourly update check
+      if (registration) setInterval(() => registration.update(), 60 * 60 * 1000)
     },
     onRegisterError(error) {
       console.error('Service worker registration failed', error)
@@ -109,7 +109,7 @@ function ReloadPrompt() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Studio (needs React Flow context)                                   */
+/* Studio (needs React Flow context)                                  */
 /* ------------------------------------------------------------------ */
 function Studio() {
   const initial = useMemo(() => {
@@ -122,8 +122,15 @@ function Studio() {
   const [projectName, setProjectName] = useState(initial.projectName ?? '')
   const [nodes, setNodes, onNodesChange] = useNodesState(withLanes(initial.nodes))
   const [edges, setEdges, onEdgesChange] = useEdgesState(initial.edges)
+  
+  // Mobile drawer states
   const [leftOpen, setLeftOpen] = useState(false)
   const [rightOpen, setRightOpen] = useState(false)
+  
+  // Desktop collapse states
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [panelCollapsed, setPanelCollapsed] = useState(false)
+
   const [exporting, setExporting] = useState(false)
   const canvasRef = useRef(null)
   const online = useOnline()
@@ -238,7 +245,7 @@ function Studio() {
   const exportJSON = useCallback(() => downloadJSON(makeReport()), [makeReport])
 
   return (
-    <div className="flex h-[100dvh] flex-col bg-slate-950 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] text-slate-100">
+    <div className="flex h-[100dvh] flex-col bg-slate-950 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] text-slate-100 overflow-hidden">
       <Header
         projectName={projectName}
         onProjectName={setProjectName}
@@ -254,6 +261,10 @@ function Studio() {
           setLeftOpen(false)
           setRightOpen((v) => !v)
         }}
+        onToggleSidebarCollapse={() => setSidebarCollapsed((v) => !v)}
+        onTogglePanelCollapse={() => setPanelCollapsed((v) => !v)}
+        sidebarCollapsed={sidebarCollapsed}
+        panelCollapsed={panelCollapsed}
         counts={analysis.counts}
         online={online}
       />
@@ -270,7 +281,13 @@ function Studio() {
           />
         )}
 
-        <EquipmentSidebar open={leftOpen} onClose={() => setLeftOpen(false)} onAdd={(k) => addNode(k)} />
+        <EquipmentSidebar
+          open={leftOpen}
+          onClose={() => setLeftOpen(false)}
+          onAdd={(k) => addNode(k)}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed((v) => !v)}
+        />
 
         <main ref={canvasRef} className="relative h-full min-w-0 flex-1 overflow-hidden">
           <NetworkCanvas
@@ -296,6 +313,8 @@ function Studio() {
           onDeleteNode={deleteNode}
           onDeleteEdge={deleteEdge}
           onFocusIssue={focusIssue}
+          collapsed={panelCollapsed}
+          onToggleCollapse={() => setPanelCollapsed((v) => !v)}
         />
       </div>
 
